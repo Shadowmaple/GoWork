@@ -1,1 +1,2 @@
- ![GO](https://camo.githubusercontent.com/a1e07378a1cba6bf7e0b42c84b2865681b58deb9/68747470733a2f2f696d616765732e79696e7a6967652e636f6d2f323031392d30322d32312d476f2d4c6f676f5f4c69676874426c75652e706e67)
+<img src="https://images.yinzige.com/2019-02-21-Go-Logo_LightBlue.png" width=200px/>
+
