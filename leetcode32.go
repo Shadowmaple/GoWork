@@ -9,22 +9,24 @@ func longestValidParentheses(s string) int {
 			continue
 		}
 		flag := 1
-		for index, ch := range s[begin+1:] {
+		for _, ch := range s[begin+1:] {
 			if ch == '(' {
 				flag++
 			} else if ch == ')' {
 				flag--
 			}
 			if flag == 0 {
-				total += index + 1 + 1
+				total += 2
+				break
 			}
 		}
 	}
+	return total
 }
 
 func main() {
-	var s string
-	fmt.Scanf(s)
-	num := longestValidParentheses(s)
+	//var s string
+	//fmt.Scanf(s)
+	num := longestValidParentheses(")(())")
 	fmt.Println(num)
 }
