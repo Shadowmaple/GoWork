@@ -22,7 +22,6 @@ func longestCommonPrefix(strs []string) string {
 }
 
 func main() {
-	//s := []string{"flower", "flow", "flight"}
-	s := []string{}
+	s := []string{"flower", "flow", "flight"}
 	fmt.Println(longestCommonPrefix(s))
 }
