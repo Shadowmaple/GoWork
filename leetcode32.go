@@ -3,20 +3,27 @@ import "fmt"
 
 func longestValidParentheses(s string) int {
 	total := 0
-	length := len(s)
-	for i:=0, j:=length-1; i<j {
-		for ; s[i:i+1]=='('; i++ {
-			;
+	
+	for begin, char := range s {
+		if char != '(' {
+			continue
 		}
-		for ; s[j:j+1]==')'; j-- {
-			;
+		flag := 1
+		for index, ch := range s[begin+1:] {
+			if ch == '(' {
+				flag++
+			} else if ch == ')' {
+				flag--
+			}
+			if flag == 0 {
+				total += index + 1 + 1
+			}
 		}
 	}
 }
 
 func main() {
 	var s string
-
 	fmt.Scanf(s)
 	num := longestValidParentheses(s)
 	fmt.Println(num)
