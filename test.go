@@ -17,8 +17,11 @@ func main() {
 	b := "sd"
 	fmt.Println(a[:2], b, a[:2]==b)
 	*/
+
+	
 	s := "adfaf"
 	for index, ch := range s[2:] {
 		fmt.Println(index, ch)
 	}
+	
 }

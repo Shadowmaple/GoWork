@@ -1,6 +1,9 @@
 package main
+
 import "fmt"
 
+//执行用时 : 556 ms, 在Longest Valid Parentheses的Go提交中击败了5.10% 的用户
+//内存消耗 : 2.4 MB, 在Longest Valid Parentheses的Go提交中击败了91.49% 的用户
 func longestValidParentheses(s string) int {
 	max := 0
 	
