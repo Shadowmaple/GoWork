@@ -20,7 +20,11 @@ func longestValidParentheses(s string) int {
 				if total > max {
 					max = total
 				}
-				break
+				if len(s)-1 > begin+index+2 && s[begin+index+2] == '(' {
+					continue
+				} else {
+					break
+				}
 			}
 		}
 	}
@@ -30,6 +34,6 @@ func longestValidParentheses(s string) int {
 func main() {
 	//var s string
 	//fmt.Scanf(s)
-	num := longestValidParentheses(")(())")
+	num := longestValidParentheses("()()")
 	fmt.Println(num)
 }
