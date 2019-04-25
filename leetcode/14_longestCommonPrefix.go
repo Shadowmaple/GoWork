@@ -1,6 +1,8 @@
 package main
 import "fmt"
 
+//执行用时 : 4 ms, 在Longest Common Prefix的Go提交中击败了92.81% 的用户
+//内存消耗 : 2.4 MB, 在Longest Common Prefix的Go提交中击败了48.92% 的用户
 func longestCommonPrefix(strs []string) string {
 	if len(strs) == 0 {
 		return ""
