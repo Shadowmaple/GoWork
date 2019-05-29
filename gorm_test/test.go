@@ -55,7 +55,7 @@ func main() {
 
 	var user User
 	go func() {
-		wait.Wait()
+		wait.Wait()"nick"
 		lock.Lock()
 		defer lock.Unlock()
 		defer wait2.Done()
