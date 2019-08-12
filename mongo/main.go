@@ -12,7 +12,8 @@ type User struct {
 }
 
 func main()  {
-	mongodbUrl := "mongodb://127.0.0.1"
+	// mongodbUrl := "mongodb://127.0.0.1:27017"
+	mongodbUrl := "mongodb://admin:admin@127.0.0.1:27017/table"
 	clientOptions := options.Client().ApplyURI(mongodbUrl)
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -22,9 +23,9 @@ func main()  {
 	}
 
 	collection := client.Database("table").Collection("xk")
-	_, err = collection.InsertOne(context.TODO(), User{Name: "Shadow"})
-	if err == nil {
-		fmt.Println("Insert Success")
+	_, err = collection.InsertOne(context.TODO(), User{Name: "Nick"})
+	if err != nil {
+		fmt.Println(err)
 	}
-
+	fmt.Println("Insert Success")
 }
