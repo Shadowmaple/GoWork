@@ -16,5 +16,5 @@ func main() {
 		message := "hello " + name
 		c.String(http.StatusOK, message)
 	})
-	route.Run()
+	_ = route.Run()
 }
