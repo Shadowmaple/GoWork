@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-
 	requestUrl := "https://accounts.douban.com/j/mobile/login/basic"
 
 	// 输入账号和密码
@@ -31,19 +30,25 @@ func main() {
 
 	payload := strings.NewReader(data.Encode())
 
-	req, _ := http.NewRequest("POST", requestUrl, payload)
+	req, err := http.NewRequest("POST", requestUrl, payload)
+	if err != nil {
+		panic(err)
+		return
+	}
 
-	req.Header.Add("Sec-Fetch-Mode", "cors")
-	req.Header.Add("Sec-Fetch-Site", "same-origin")
-	req.Header.Add("Origin", "https://accounts.douban.com")
-	req.Header.Add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Referer", "https://accounts.douban.com/passport/login")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Origin", "https://accounts.douban.com")
+	req.Header.Add("Referer", "https://accounts.douban.com/passport/login_popup?login_source=anony")
+	req.Header.Add("Sec-Fetch-Mode", "cors")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
 	req.Header.Add("X-Requested-With", "XMLHttpRequest")
-	req.Header.Add("Host", "accounts.douban.com")
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+		return
+	}
 
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)

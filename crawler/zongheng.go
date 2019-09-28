@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -10,6 +9,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 func main() {
@@ -37,7 +38,7 @@ func main() {
 
 			dom, _ := goquery.NewDocumentFromReader(strings.NewReader(content))
 			dom.Find(".search-tab").Each(func(i int, selection *goquery.Selection){
-				//fmt.Println(selection.Text())
+				// fmt.Println(selection.Text())
 				wait.Add(1)
 				go func () {
 					defer wait.Done()
@@ -49,12 +50,6 @@ func main() {
 						fmt.Fprintln(file, title.Text())
 						num++
 					})
-					/*
-					selection.Find(".bookinfo").Each(func(i int, author *goquery.Selection) {
-						//fmt.Println(author.Text())
-						fmt.Fprintln(file, author.Text())
-					})
-					 */
 				}()
 				})
 		}()
