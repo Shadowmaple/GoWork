@@ -1,4 +1,5 @@
 package main
+
 import (
 	"fmt"
 	"sync"
@@ -21,6 +22,6 @@ func main() {
 
 	// 等待 10 个 goroutine 结束
 	for i := 0; i < 10; i++ {
-		<-done
+		fmt.Println(<-done)
 	}
 }
