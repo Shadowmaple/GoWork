@@ -2,19 +2,18 @@ package main
 
 import (
 	// "fmt"
-	"net/http"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-
 type User struct {
-	Username	string	`json:"username"`
-	Password	string 	`json:"password"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
-func main()  {
+func main() {
 	g := gin.Default()
 
 	g.POST("", getData)
@@ -32,14 +31,13 @@ func getData(c *gin.Context) {
 	}
 
 	var user User
-	
+
 	// 绑定json
 	err = c.BindJSON(&user)
 	if err != nil {
 		log.Println("json get failed")
 	}
-	c.JSON(http.StatusOK, user.Username + " " + user.Password)
-
+	c.JSON(http.StatusOK, user.Username+" "+user.Password)
 
 	// 读取form-data参数
 	name := c.PostForm("name")
