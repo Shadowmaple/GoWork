@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"sync"
+	"runtime"
 	"time"
 )
 
 func main() {
+	runtime.GOMAXPROCS(1)
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
@@ -24,11 +26,11 @@ func main() {
 		defer wg.Done()
 
 		fmt.Println("A")
-		fmt.Println("B")
 
 		// 设置个睡眠，让该协程执行超时而被挂起，引起超时调度
-        time.Sleep(time.Second)
+        time.Sleep(time.Second * 1)
 
+		fmt.Println("B")
 		fmt.Println("C")
 	}()
 
