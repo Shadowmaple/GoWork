@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func main(){
+func main() {
 	client := http.Client{}
 	requestUrl := "http://spoc.ccnu.edu.cn/userLoginController/getUserProfile"
 	postData := make(url.Values)
