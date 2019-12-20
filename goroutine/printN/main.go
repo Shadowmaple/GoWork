@@ -30,31 +30,40 @@ func main() {
 	}
 }
 
+// WaitGroup
 func method1() {
 	var i int64 = -1
 	runtime.GOMAXPROCS(2)
 
+	var wg sync.WaitGroup
+
 	go func() {
 		for {
-			i += 1
+			wg.Add(1)
 			fmt.Println(i)
+			wg.Done()
+
 			time.Sleep(time.Second)
 		}
 	}()
 
 	for {
 		i += 1
+		wg.Wait()
 	}
 }
 
+// channel, CSP
 func method2() {
 	var i int64 = -1
 	runtime.GOMAXPROCS(2)
 
 	ch := make(chan int64, 1)
+	getCh := make(chan bool, 1)
 
 	go func() {
 		for {
+			getCh <- true
 			fmt.Println(<-ch)
 			time.Sleep(time.Second)
 		}
@@ -62,26 +71,50 @@ func method2() {
 
 	for {
 		i += 1
-		ch <- i
+		select {
+		case <-getCh:
+			ch <- i
+		default:
+		}
 	}
 }
 
+// 锁
 func method3() {
 	var i int64 = -1
 	runtime.GOMAXPROCS(2)
 
-	var wg sync.WaitGroup
+	var lock sync.Mutex
+
+	go func() {
+		for {
+			lock.Lock()
+			fmt.Println(i)
+			lock.Unlock()
+			time.Sleep(time.Second)
+		}
+	}()
+
+	for {
+		lock.Lock()
+		i += 1
+		lock.Unlock()
+	}
+}
+
+func method4() {
+	var i int64 = -1
+	runtime.GOMAXPROCS(2)
+
+	go func() {
+		for {
+			fmt.Println(i)
+			time.Sleep(time.Second)
+		}
+	}()
 
 	for {
 		i += 1
-
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-
-			fmt.Println(i)
-			time.Sleep(time.Second)
-		}()
-		wg.Wait()
+		runtime.Gosched()
 	}
 }
