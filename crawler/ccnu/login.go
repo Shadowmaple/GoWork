@@ -17,14 +17,12 @@ func main() {
 	request, err := http.NewRequest("GET", requestUrl, nil)
 	if err != nil {
 		panic(err)
-		return
 	}
 
 	// 发起请求
 	rp, err := client.Do(request)
 	if err != nil {
 		panic(err)
-		return
 	}
 
 	// 读取body
@@ -32,7 +30,6 @@ func main() {
 	defer rp.Body.Close()
 	if err != nil {
 		panic(err)
-		return
 	}
 
 	content := string(body)
@@ -41,7 +38,7 @@ func main() {
 	var JSESSIONID string
 	var lt string
 	var execution string
-	var _eventId string
+	// var _eventId string
 
 	// 获取 Cookie 中的 JSESSIONID
 	for _, cookie := range rp.Cookies() {
@@ -67,12 +64,12 @@ func main() {
 	execution = params[1]
 
 	postData := url.Values{
-		"username": {"***"},
-		"password": {"***"},
-		"lt": {lt},
+		"username":  {"***"},
+		"password":  {"***"},
+		"lt":        {lt},
 		"execution": {execution},
-		"_eventId": {"submit"},
-		"submit": {"LOGIN"},
+		"_eventId":  {"submit"},
+		"submit":    {"LOGIN"},
 	}
 
 	//cookie := "D7AB9DFCA0408CA3E6709F728C149DB4"
@@ -82,14 +79,12 @@ func main() {
 	//requestUrl = `https://account.ccnu.edu.cn/cas/login;jsessionid=` + cookie
 
 	r, _ := http.NewRequest("POST", requestUrl, strings.NewReader(postData.Encode()))
-	r.Header.Set("Cookie", "JSESSIONID=" + cookie)
+	r.Header.Set("Cookie", "JSESSIONID="+cookie)
 	rp, err = client.Do(r)
 	if err != nil {
 		panic(err)
-		return
 	}
 	body, _ = ioutil.ReadAll(rp.Body)
 	content = string(body)
 	fmt.Println(content)
 }
-
