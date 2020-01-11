@@ -22,7 +22,7 @@ func main() {
 	wait2.Add(1)
 
 	db, err := gorm.Open("mysql",
-        "<username>:<passward>@/<tableName>?charset=utf8mb4&parseTime=True&loc=Local")
+        "<username>:<passward>@/<dbName>?charset=utf8mb4&parseTime=True&loc=Local")
     defer db.Close()
 
 	if err != nil {
