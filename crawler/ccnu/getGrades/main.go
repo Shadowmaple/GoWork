@@ -5,11 +5,13 @@ import (
 	"strings"
 	"net/http"
 	"io/ioutil"
+	"regexp"
+	"strconv"
+	"time"
 )
 
 func main() {
 
-//	url := "http://xk.ccnu.edu.cn/cjcx/cjcx_cxCjxq.html?time=1579246531974&gnmkdm=N305005"
 	url := "http://xk.ccnu.edu.cn/cjcx/cjcx_cxCjxq.html?time=" + strconv.Itoa(int(time.Now().UnixNano())) + "&gnmkdm=N305005"
 	method := "POST"
 
@@ -25,11 +27,23 @@ func main() {
 	req.Header.Add("Origin", "http://xk.ccnu.edu.cn")
 	req.Header.Add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-	req.Header.Add("Cookie", "JSESSIONID=FA254977BA95A1E5BAC56C0F18BF0476")
+	req.Header.Add("Cookie", "JSESSIONID=53874C814E6C443A86421EA9CD78078A")
 
 	res, err := client.Do(req)
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 
 	fmt.Println(string(body))
+
+	fmt.Println("--------------------")
+
+	html := string(body)
+
+	rg, err := regexp.Compile(`<td valign="middle">[^%]*&nbsp;</td>`)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	s := rg.FindAllString(html, 2)
+	fmt.Println(s)
 }
