@@ -1,7 +1,9 @@
 package main
+
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -16,5 +18,5 @@ func main() {
 		message := "hello " + name
 		c.String(http.StatusOK, message)
 	})
-	_ = route.Run()
+	route.Run(":2000")
 }

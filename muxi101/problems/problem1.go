@@ -5,8 +5,8 @@ import (
 )
 
 type UserInfo struct {
-	Id	 	 int64
-	Name 	 string
+	Id       int64
+	Name     string
 	CourseId int64
 }
 
@@ -38,8 +38,8 @@ func GetUserList(userId []int64) (map[int64]*UserInfo, error) {
 
 		// 添加用户
 		userList[id] = &UserInfo{
-			Id:		  id,
-			Name: 	  name,
+			Id:       id,
+			Name:     name,
 			CourseId: courseId,
 		}
 	}
@@ -50,9 +50,11 @@ func GetUserList(userId []int64) (map[int64]*UserInfo, error) {
 // 获取姓名
 func GetName(id int64) (string, error) {
 	// ...
+	return "", nil
 }
 
 // 获取课堂号
-func GetCourseId(id int64) (int64, error){
+func GetCourseId(id int64) (int64, error) {
 	// ...
+	return 0, nil
 }
