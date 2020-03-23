@@ -6,13 +6,6 @@ import (
 	"github.com/go-redis/redis/v7"
 )
 
-// type RdbClient struct {
-// 	Self *redis.Client
-// }
-
-// var subRdb *RdbClient
-// var pubRdb *RdbClient
-
 func main() {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
