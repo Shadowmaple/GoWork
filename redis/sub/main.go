@@ -6,18 +6,18 @@ import (
 	"github.com/go-redis/redis/v7"
 )
 
-type RdbClient struct {
-	Self *redis.Client
-}
+//type RdbClient struct {
+//	Self *redis.Client
+//}
 
-var Rdb *RdbClient
+var Rdb *redis.Client
 
 func main() {
 	fmt.Println("sub start")
-	Rdb = &RdbClient{Self: OpenRedisClient()}
-	defer Rdb.Self.Close()
+	Rdb = OpenRedisClient()
+	defer Rdb.Close()
 
-	sub := Rdb.Self.Subscribe("channel")
+	sub := Rdb.Subscribe("channel")
 
 	ch := sub.Channel()
 
