@@ -19,19 +19,32 @@ import (
 	"gopkg.in/oauth2.v4/store"
 )
 
+var (
+	authCodeExp     = time.Hour * 10
+	accessTokenExp  = time.Hour * 10
+	refreshTokenExp = time.Hour * 10
+	jwtKey          = "oauth"
+)
+
 func main() {
 	manager := manage.NewDefaultManager()
 
+	// 授权码模式下token配置
+	manager.SetAuthorizeCodeTokenCfg(&manage.Config{
+		AccessTokenExp:    accessTokenExp,
+		RefreshTokenExp:   refreshTokenExp,
+		IsGenerateRefresh: true,
+	})
+	manager.SetAuthorizeCodeExp(authCodeExp)
+
 	// token store
 	manager.MustTokenStorage(store.NewFileTokenStore("store.db"))
+	// token generate
+	manager.MapAccessGenerate(generates.NewJWTAccessGenerate([]byte(jwtKey), jwt.SigningMethodHS512))
 
 	// client store
 	clientStore := store.NewClientStore()
 	manager.MapClientStorage(clientStore)
-
-	manager.SetAuthorizeCodeTokenCfg(manage.DefaultAuthorizeCodeTokenCfg)
-	// token generate
-	manager.MapAccessGenerate(generates.NewJWTAccessGenerate([]byte("oauth"), jwt.SigningMethodHS512))
 
 	clientStore.Set("test", &models.Client{
 		ID:     "test",
@@ -40,7 +53,7 @@ func main() {
 	})
 
 	srv := server.NewDefaultServer(manager)
-	srv.SetAllowedGrantType(oauth2.AuthorizationCode)
+	srv.SetAllowedGrantType(oauth2.AuthorizationCode, oauth2.Refreshing)
 	srv.SetAllowGetAccessRequest(false)
 
 	srv.SetInternalErrorHandler(func(err error) (re *errors.Response) {
@@ -107,6 +120,14 @@ func main() {
 	})
 
 	// 请求token
+	// Params:
+	//   grant_type: authorization_code
+	//   response_type: token
+	//   redirect_uri:
+	// Forms:
+	//   client_id
+	//   client_secret
+	//   code:
 	http.HandleFunc("/token", func(w http.ResponseWriter, r *http.Request) {
 		// srv.GetAccessToken()
 		err := srv.HandleTokenRequest(w, r)
@@ -114,6 +135,21 @@ func main() {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		fmt.Println("request token finished")
+	})
+
+	// Params:
+	//   grant_type: refresh_token
+	//   scope:
+	// Forms:
+	//   client_id
+	//   client_secret
+	//   refresh_token:
+	http.HandleFunc("/refresh", func(w http.ResponseWriter, r *http.Request) {
+		err := srv.HandleTokenRequest(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		fmt.Println("refresh token finished")
 	})
 
 	// 客户端备案
