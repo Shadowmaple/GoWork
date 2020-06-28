@@ -16,6 +16,7 @@ import (
 	"gopkg.in/oauth2.v4/manage"
 	"gopkg.in/oauth2.v4/models"
 	"gopkg.in/oauth2.v4/server"
+
 	"gopkg.in/oauth2.v4/store"
 )
 
@@ -70,7 +71,8 @@ func main() {
 	// UserAuthorizationHandler get user id from request authorization
 	srv.SetUserAuthorizationHandler(func(w http.ResponseWriter, r *http.Request) (userID string, err error) {
 		// return "", errors.ErrAccessDenied
-		return "user", nil
+		userID = r.Context().Value("userID").(string)
+		return
 	})
 
 	// get client info (clientID and clientSecret)
@@ -88,15 +90,61 @@ func main() {
 
 	router := gin.Default()
 
+	router.POST("/login", func(c *gin.Context) {
+		fmt.Println("login is called")
+
+		c.Set("userID", "123")
+
+		// url := c.Request.Host + "/auth"
+		// fmt.Println(url)
+		// c.Redirect(http.StatusPermanentRedirect, url)
+	})
+
 	// 请求 auth code
-	router.POST("/auth", func(g *gin.Context) {
+	// Params:
+	//   response_type: code
+	//   client_id:
+	//   redirect_uri:
+	router.POST("/auth", func(c *gin.Context) {
 		// 发送auth code
 
-		err := srv.HandleAuthorizeRequest(g.Writer, g.Request)
-		if err != nil {
-			http.Error(g.Writer, err.Error(), http.StatusBadRequest)
-			return
+		// err := srv.HandleAuthorizeRequest(c.Writer, c.Request)
+		// if err != nil {
+		// 	http.Error(c.Writer, err.Error(), http.StatusBadRequest)
+		// 	return
+		// }
+		// ctx := r.Context()
+
+		userID := "123"
+
+		f := func() {
+			req, err := srv.ValidationAuthorizeRequest(c.Request)
+			if err != nil {
+				// return srv.redirectError(w, req, err)
+				return
+			}
+
+			req.UserID = userID
+			fmt.Println("--", userID)
+
+			// 可设置token过期时间，纳秒
+			// if tokenExp, ok := c.GetQuery("token_exp"); ok {
+			// 	exp, err := strconv.ParseInt(tokenExp, 10, 64)
+			// 	if err == nil {
+			// 		req.AccessTokenExp = time.Duration(exp)
+			// 	}
+			// }
+
+			ti, err := srv.GetAuthorizeToken(c, req)
+			if err != nil {
+				return
+			}
+			// fmt.Println(ti)
+			c.JSON(200, ti)
 		}
+
+		f()
+
 		fmt.Println("request auth finished")
 	})
 
@@ -104,117 +152,119 @@ func main() {
 	// Params:
 	//   grant_type: authorization_code
 	//   response_type: token
+	//   client_id:
 	//   redirect_uri:
 	// Forms:
-	//   client_id
 	//   client_secret
 	//   code:
-	router.POST("/token", func(g *gin.Context) {
-		// err := srv.HandleTokenRequest(g.Writer, g.Request)
+	router.POST("/token", func(c *gin.Context) {
+		// err := srv.HandleTokenRequest(c.Writer, c.Request)
 		// if err != nil {
-		// 	http.Error(g.Writer, err.Error(), http.StatusInternalServerError)
+		// 	http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
 		// 	return
 		// }
-		grantType, ok := g.GetQuery("grant_type")
+		grantType, ok := c.GetQuery("grant_type")
 		if !ok {
-			g.String(http.StatusBadRequest, "grant_type is required")
+			c.String(http.StatusBadRequest, "grant_type is required")
 			return
 		} else if grantType != "authorization_code" {
-			g.String(http.StatusBadRequest, "auth code grant")
+			c.String(http.StatusBadRequest, "auth code grant")
 			return
 		}
 
-		code, ok := g.GetPostForm("code")
+		code, ok := c.GetPostForm("code")
 		if !ok {
-			g.String(http.StatusBadRequest, "code")
+			c.String(http.StatusBadRequest, "code")
 			return
 		}
 
-		clientID, clientSecret, err := srv.ClientInfoHandler(g.Request)
+		clientID, clientSecret, err := srv.ClientInfoHandler(c.Request)
 		if err != nil {
-			g.String(http.StatusBadRequest, "client info required")
+			c.String(http.StatusBadRequest, "client info required")
 			return
 		}
 
 		tgr := &oauth2.TokenGenerateRequest{
 			ClientID:     clientID,
 			ClientSecret: clientSecret,
-			Request:      g.Request,
+			Request:      c.Request,
 			Code:         code,
+			UserID:       "1",
 		}
 
-		ti, err := srv.GetAccessToken(g, oauth2.GrantType(grantType), tgr)
+		ti, err := srv.GetAccessToken(c, oauth2.GrantType(grantType), tgr)
 		if err != nil {
-			g.String(500, "error")
+			c.String(500, "error")
 			return
 		}
 
-		g.JSON(200, ti)
+		c.JSON(200, ti)
 		fmt.Println("request token finished")
 	})
 
+	// 更新token
 	// Params:
 	//   grant_type: refresh_token
-	//   scope:
+	//   client_id:
 	// Forms:
-	//   client_id
-	//   client_secret
+	//   client_secret:
 	//   refresh_token:
-	router.POST("/refresh", func(g *gin.Context) {
-		grantType, ok := g.GetQuery("grant_type")
+	router.POST("/refresh", func(c *gin.Context) {
+		grantType, ok := c.GetQuery("grant_type")
 		if !ok {
-			g.String(http.StatusBadRequest, "grant_type is required")
+			c.String(http.StatusBadRequest, "grant_type is required")
 			return
 		} else if grantType != "refresh_token" {
-			g.String(http.StatusBadRequest, "refresh token")
+			c.String(http.StatusBadRequest, "refresh token")
 			return
 		}
 
-		refreshToken, ok := g.GetPostForm("refresh_token")
+		refreshToken, ok := c.GetPostForm("refresh_token")
 		if !ok {
-			g.String(http.StatusBadRequest, "refresh token")
+			c.String(http.StatusBadRequest, "refresh token")
 			return
 		}
 
-		clientID, clientSecret, err := srv.ClientInfoHandler(g.Request)
+		clientID, clientSecret, err := srv.ClientInfoHandler(c.Request)
 		if err != nil {
-			g.String(http.StatusBadRequest, "client info required")
+			c.String(http.StatusBadRequest, "client info required")
 			return
 		}
 
 		tgr := &oauth2.TokenGenerateRequest{
 			ClientID:     clientID,
 			ClientSecret: clientSecret,
-			Request:      g.Request,
+			Request:      c.Request,
 			Refresh:      refreshToken,
+			UserID:       "1",
 		}
 
-		ti, err := srv.GetAccessToken(g, oauth2.GrantType(grantType), tgr)
+		ti, err := srv.GetAccessToken(c, oauth2.GrantType(grantType), tgr)
 		if err != nil {
-			g.String(500, "error")
+			c.String(500, "error")
 			return
 		}
 
-		g.JSON(200, ti)
+		c.JSON(200, ti)
 
 		fmt.Println("refresh token finished")
 	})
 
 	// 客户端备案
-	router.POST("/store", func(g *gin.Context) {
+	router.POST("/store", func(c *gin.Context) {
 		var rq struct {
 			ClientId string `json:"client_id"`
 			Domain   string `json:"domain"`
 		}
-		if err := g.BindJSON(&rq); err != nil {
-			http.Error(g.Writer, err.Error(), http.StatusBadRequest)
+		if err := c.BindJSON(&rq); err != nil {
+			http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 			return
 		}
 		fmt.Println(rq)
-		_, err := clientStore.GetByID(g, rq.ClientId)
+		_, err := clientStore.GetByID(c, rq.ClientId)
 		if err == nil {
 			// 找到，已存在
-			http.Error(g.Writer, err.Error(), 400)
+			http.Error(c.Writer, err.Error(), 400)
 			return
 		}
 		secret := generateUUID()
@@ -227,7 +277,7 @@ func main() {
 			ClientId     string `json:"client_id"`
 			ClientSecret string `json:"client_secret"`
 		}
-		g.JSON(http.StatusOK, rp{
+		c.JSON(http.StatusOK, rp{
 			ClientId:     rq.ClientId,
 			ClientSecret: secret,
 		})
