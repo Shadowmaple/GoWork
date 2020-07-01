@@ -1,4 +1,5 @@
 package main
+
 import "fmt"
 
 //执行用时 : 4 ms, 在Longest Common Prefix的Go提交中击败了92.81% 的用户

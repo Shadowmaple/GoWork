@@ -1,10 +1,14 @@
 package main
-import ("fmt"; "strconv")
+
+import (
+	"fmt"
+	"strconv"
+)
 
 func main() {
 	var n int
 	fmt.Scan(&n)
-	var ch = [10]string{"ling","yi","er","san","si","wu","liu","qi","ba","jiu"}
+	var ch = [10]string{"ling", "yi", "er", "san", "si", "wu", "liu", "qi", "ba", "jiu"}
 	var sum = 0
 
 	for n > 0 {

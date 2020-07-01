@@ -6,11 +6,11 @@ import "fmt"
 func threeSum(nums []int) [][]int {
 	var data [][]int
 	for index, a := range nums {
-		for i := index+1; i < len(nums)-1; i++ {
+		for i := index + 1; i < len(nums)-1; i++ {
 			b := nums[i]
-			for j := i+1; j < len(nums); j++ {
+			for j := i + 1; j < len(nums); j++ {
 				c := nums[j]
-				if a + b == -c {
+				if a+b == -c {
 					//排除重复
 					flag := true
 					for _, k := range data {
@@ -50,6 +50,6 @@ func contain(n int, array []int) bool {
 }
 
 func main() {
-	num := []int {-1, 0, 1, 2, -1, -4}
+	num := []int{-1, 0, 1, 2, -1, -4}
 	fmt.Println(threeSum(num))
 }

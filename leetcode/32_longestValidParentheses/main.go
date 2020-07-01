@@ -6,7 +6,7 @@ import "fmt"
 //内存消耗 : 2.4 MB, 在Longest Valid Parentheses的Go提交中击败了91.49% 的用户
 func longestValidParentheses(s string) int {
 	max := 0
-	
+
 	for begin, char := range s {
 		if char != '(' {
 			continue
