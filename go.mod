@@ -14,6 +14,7 @@ require (
 	github.com/spf13/viper v1.7.0
 	github.com/tidwall/gjson v1.6.0
 	go.mongodb.org/mongo-driver v1.3.4
+	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	gopkg.in/oauth2.v4 v4.0.0
