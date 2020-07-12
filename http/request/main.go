@@ -14,6 +14,13 @@ const (
 	JsonData = "application/json"
 )
 
+var (
+	code         string
+	refreshToken string
+	clientID     = "4b194ad8-7d97-4dca-b078-6c3c65b31c75"
+	clientSecret = "8c066b19-e507-4887-88f3-7e7edd99bfd8"
+)
+
 type RequestData struct {
 	Query       map[string]string
 	FormData    map[string]string
@@ -21,49 +28,66 @@ type RequestData struct {
 }
 
 type BasicResponse struct {
-	Code    int
-	Message string
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 	// Data    map[string]interface{}
-	Data CodeResponse
 }
 
 type CodeResponse struct {
-	Code    string
-	Expired int64
+	BasicResponse
+	Data CodeItem `json:"data"`
+}
+
+type CodeItem struct {
+	Code    string `json:"code"`
+	Expired int64  `json:"expired"`
 }
 
 type TokenResponse struct {
-	AccessToken    string
-	AccessExpired  int64
-	RefreshToken   string
-	RefreshExpired int64
+	BasicResponse
+	Data TokenItem `json:"data"`
+}
+
+type TokenItem struct {
+	AccessToken    string `json:"access_token"`
+	AccessExpired  int64  `json:"access_expired"`
+	RefreshToken   string `json:"refresh_token"`
+	RefreshExpired int64  `json:"refresh_expired"`
 }
 
 func main() {
 	CodeRequest()
-	// TokenRequest()
+	TokenRequest()
+	RefreshTokenRequest()
 }
 
 func TokenRequest() {
 	url := "http://localhost:8083/auth/api/oauth/token"
-	query := map[string]string{"client_id": "a850da64-310e-416f-a6c3-ad9a7ad7eb25", "response_type": "token", "grant_type": "authorization_code"}
-	formData := map[string]string{"code": "P9U6D6COPZYUNNV4WCTIMA", "client_secret": "2a839568-67a5-47b8-9027-00207b3d5072"}
+	query := map[string]string{"client_id": clientID, "response_type": "token", "grant_type": "authorization_code"}
+	formData := map[string]string{"code": code, "client_secret": clientSecret}
 
 	s, err := SendHTTPRequest(url, "POST", RequestData{
 		Query:       query,
 		FormData:    formData,
 		ContentType: FormData,
 	})
-
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(s)
+
+	var data TokenResponse
+	err = MarshalBodyForCustomData([]byte(s), &data)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(data.Data)
+	refreshToken = data.Data.RefreshToken
 }
 
 func CodeRequest() {
 	url := "http://localhost:8083/auth/api/oauth"
-	query := map[string]string{"client_id": "a850da64-310e-416f-a6c3-ad9a7ad7eb25", "response_type": "code"}
+	query := map[string]string{"client_id": clientID, "response_type": "code"}
 	formData := map[string]string{"username": "shadow", "password": "MTIz"}
 
 	s, err := SendHTTPRequest(url, "POST", RequestData{
@@ -76,23 +100,31 @@ func CodeRequest() {
 	}
 	fmt.Println(s)
 
-	var data BasicResponse
+	var data CodeResponse
 	err = MarshalBodyForCustomData([]byte(s), &data)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(data.Data.Code)
 
-	// if err := json.Unmarshal([]byte(s), &data); err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Println(data.Data)
+	code = data.Data.Code
+}
 
-	// code, ok := data.Data["code"].(string)
-	// if !ok {
-	// 	log.Fatal("error")
-	// }
-	// fmt.Println(code)
+func RefreshTokenRequest() {
+	// refreshToken = "MOGKAKGKU7IXFQNKMSTJWQ"
+	url := "http://localhost:8083/auth/api/oauth/token/refresh"
+	query := map[string]string{"client_id": clientID, "grant_type": "refresh_token"}
+	bodyData := map[string]string{"refresh_token": refreshToken, "client_secret": clientSecret}
+
+	s, err := SendHTTPRequest(url, "POST", RequestData{
+		Query:       query,
+		FormData:    bodyData,
+		ContentType: FormData,
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(s)
 }
 
 func SendHTTPRequest(requestURL, method string, data RequestData) (string, error) {
