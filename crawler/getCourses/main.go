@@ -13,8 +13,8 @@ func main() {
 
 func GetCourses() {
 	sid := "2018214830"
-	cookie := "JSESSIONID=9775CD2E38E1E9F85B6C3E07D5C28606"
-	url := "http://xk.ccnu.edu.cn/xkcx/xkmdcx_cxXkmdcxIndex.html?doType=query&gnmkdm=N255010&su=" + sid
+	cookie := "JSESSIONID=FCEB127575E0C6D4691B33029B64EFC7"
+	url := "http://xk.ccnu.edu.cn/jwglxt/xkcx/xkmdcx_cxXkmdcxIndex.html?doType=query&gnmkdm=N255010&su=" + sid
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
