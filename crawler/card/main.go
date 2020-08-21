@@ -1,8 +1,8 @@
 package main
 
 func main() {
-	sid := "2018214830"
-	password := "ccnuzmc"
+	sid := ""
+	password := ""
 
 	if err := GetCardInfo(sid, password); err != nil {
 		panic(err)

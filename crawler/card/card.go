@@ -3,18 +3,18 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"time"
 
-	"github.com/lexkong/log"
 	"golang.org/x/net/publicsuffix"
 )
 
 func GetCardInfo(sid, password string) error {
 	params, err := MakeAccountPreflightRequest()
 	if err != nil {
-		log.Error("MakeAccountPreflightRequest function error", err)
+		log.Println("MakeAccountPreflightRequest function error:" + err.Error())
 		return err
 	}
 
@@ -29,7 +29,7 @@ func GetCardInfo(sid, password string) error {
 	}
 
 	if err := MakeAccountRequest(sid, password, params, client); err != nil {
-		log.Error("MakeAccountRequest function err", err)
+		log.Println("MakeAccountRequest function err:" + err.Error())
 		return err
 	}
 
@@ -49,7 +49,7 @@ func GetCardInfo(sid, password string) error {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Error("Request error", err)
+		log.Printf("Request error: %s", err.Error())
 		return err
 	}
 
