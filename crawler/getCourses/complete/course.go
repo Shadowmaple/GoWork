@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
 	"strings"
 	"time"
 
-	"github.com/lexkong/log"
 	"golang.org/x/net/publicsuffix"
 )
 
@@ -33,7 +33,7 @@ type OriginalCourseItem struct {
 func GetSelfCoursesFromXK(sid, password string, year, term string) (*OriginalCourses, error) {
 	params, err := MakeAccountPreflightRequest()
 	if err != nil {
-		log.Error("MakeAccountPreflightRequest function error", err)
+		log.Println("MakeAccountPreflightRequest function error", err)
 		return nil, err
 	}
 
@@ -48,12 +48,12 @@ func GetSelfCoursesFromXK(sid, password string, year, term string) (*OriginalCou
 	}
 
 	if err := MakeAccountRequest(sid, password, params, client); err != nil {
-		log.Error("MakeAccountRequest function err", err)
+		log.Println("MakeAccountRequest function err", err)
 		return nil, err
 	}
 
 	if err := MakeXKLogin(client); err != nil {
-		log.Error("MakeXKLogin function error", err)
+		log.Println("MakeXKLogin function error", err)
 		return nil, err
 	}
 
@@ -92,7 +92,7 @@ func MakeCoursesGetRequest(client *http.Client, sid, year, term string) (*Origin
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Error("Request error", err)
+		log.Println("Request error", err)
 		return nil, err
 	}
 
@@ -106,7 +106,7 @@ func MakeCoursesGetRequest(client *http.Client, sid, year, term string) (*Origin
 
 	var data = OriginalCourses{}
 	if err := json.Unmarshal(body, &data); err != nil {
-		log.Error("Json unmarshal failed", err)
+		log.Println("Json unmarshal failed", err)
 		return nil, err
 	}
 
