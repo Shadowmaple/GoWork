@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 
-	"github.com/lexkong/log"
 	"github.com/spf13/viper"
 )
 
@@ -108,7 +108,7 @@ func MsgSecCheck(content string) error {
 
 	resp, err := http.Post(msgSecCheckURL, "application/json", bytes.NewBuffer(data))
 	if err != nil {
-		log.Error("QQ msg security check err", err)
+		log.Println("QQ msg security check err", err)
 		return err
 	}
 	defer resp.Body.Close()
@@ -127,7 +127,8 @@ func MsgSecCheck(content string) error {
 
 	// fmt.Println(rp)
 	if rp.ErrCode != 0 {
-		log.Info(fmt.Sprintf("msg security check failed. code: %d; msg: %s.", rp.ErrCode, rp.ErrMsg))
+		log.Printf(fmt.Sprintf("msg security check failed. code: %d; msg: %s.", rp.ErrCode, rp.ErrMsg))
+		return nil
 	}
 
 	return nil
