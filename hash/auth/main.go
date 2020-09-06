@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	hash := Hash("frontend")
+	hash := Hash("tencent")
 	fmt.Println(hash)
 }
 
