@@ -46,11 +46,8 @@ var (
 // 返回：
 //     东16
 //     101
+//     error
 func ProcessDormName(s string) (string, string, error) {
-	if strings.Contains(s, "南学") {
-		return "", "", nil
-	}
-
 	var flag = 0
 	var pattern = commonPattern
 
@@ -99,19 +96,12 @@ func JudgeMeterKind(s string) string {
 	var kind string
 
 	if strings.Contains(s, "照明") {
-		kind = "照明"
+		kind = "light"
 	} else if strings.Contains(s, "空调") {
-		kind = "空调"
+		kind = "air"
 	} else if strings.Contains(s, "南") {
-		kind = "空调"
+		kind = "air"
 	}
 
 	return kind
 }
-
-// 忽略
-// 东3 136 -->
-// 东3 103 -->
-// 东6 103 -->
-// 东6 104 -->
-// 东6 105 -->
