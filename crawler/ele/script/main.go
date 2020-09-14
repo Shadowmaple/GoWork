@@ -138,7 +138,7 @@ func CrawlerInOneBuilding(building *ArchitectureInfo) {
 				return
 			}
 
-			fmt.Printf("%s --> %s", room.Name, meterID)
+			fmt.Printf("%s --> %s\n", room.Name, meterID)
 
 			if err := NewDBData(buildingName, roomNum, meterID, kind); err != nil {
 				msg := fmt.Sprintf("Room=%s %s meterID=%s add to mongo error: %s", buildingName, roomNum, meterID, err.Error())
