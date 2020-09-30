@@ -8,7 +8,6 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-redis/redis/v7 v7.4.0
-	github.com/golang/protobuf v1.4.2
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
 	github.com/jinzhu/gorm v1.9.14
 	github.com/satori/go.uuid v1.2.0
@@ -21,5 +20,6 @@ require (
 	golang.org/x/net v0.0.0-20200520182314-0ba52f642ac2
 	golang.org/x/sys v0.0.0-20200909081042-eff7692f9009 // indirect
 	google.golang.org/grpc v1.21.1
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/oauth2.v4 v4.0.0
 )
