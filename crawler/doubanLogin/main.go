@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/howeyc/gopass"
-	"github.com/tidwall/gjson"
 )
 
 func main() {
@@ -19,7 +18,10 @@ func main() {
 	fmt.Print("豆瓣账号：")
 	_, _ = fmt.Scanln(&name)
 	fmt.Print("输入密码：")
-	password, _ := gopass.GetPasswdMasked()
+	password, err := gopass.GetPasswdMasked()
+	if err != nil {
+		panic(err)
+	}
 
 	data := url.Values{}
 	data.Set("name", name)
@@ -33,7 +35,6 @@ func main() {
 	req, err := http.NewRequest("POST", requestUrl, payload)
 	if err != nil {
 		panic(err)
-		return
 	}
 
 	req.Header.Add("Accept", "application/json")
@@ -47,20 +48,14 @@ func main() {
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		panic(err)
-		return
 	}
 
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		panic(err)
-		return
 	}
 	fmt.Println(res.Status)
-
-	result := gjson.Get(string(body), "message")
-	fmt.Println(result)
-	fmt.Println(gjson.Get(string(body), "description"))
 
 	fmt.Println(string(body))
 }
