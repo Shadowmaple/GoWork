@@ -18,22 +18,24 @@ func main() {
 
 	for i := 1; i <= 10; i++ {
 		requestUrl := "http://search.zongheng.com/s?keyword=" + keyword + "&pageNo=" + strconv.Itoa(i) + "&sort="
-		rp, err := http.Get(requestUrl)
+		response, err := http.Get(requestUrl)
 		if err != nil {
 			panic(err)
 		}
-		body, err := ioutil.ReadAll(rp.Body)
+
+		body, err := ioutil.ReadAll(response.Body)
 		if err != nil {
 			panic(err)
 		}
+		defer response.Body.Close()
 		content := string(body)
-		defer rp.Body.Close()
 
 		dom, err := goquery.NewDocumentFromReader(strings.NewReader(content))
 		if err != nil {
 			panic(err)
 		}
-		dom.Find(".search-tab").Each(func(i int, selection *goquery.Selection){
+
+		dom.Find(".search-tab").Each(func(i int, selection *goquery.Selection) {
 			// fmt.Println(selection.Text())
 			selection.Find(".tit").Each(func(i int, title *goquery.Selection) {
 				// fmt.Println(title.Text())
