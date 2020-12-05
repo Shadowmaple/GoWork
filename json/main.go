@@ -29,16 +29,12 @@ func main() {
 	}
 	fmt.Printf("%s\n", data)
 
-	fmt.Println("--------------")
-
 	// 格式化整理过的json，便于浏览
 	data2, err := json.MarshalIndent(movie, "", "----")
 	if err != nil {
 		log.Fatalf("JSON marshaling failed: %s", err)
 	}
 	fmt.Printf("%s\n", data2)
-
-	fmt.Println("--------------")
 
 	// 将JSON字符串解码为GO格式
 	var m Movie
