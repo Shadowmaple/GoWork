@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	room := "国4-0114照明公用"
-	s := ProcessDormName(room)
+//	room := "国4-0114照明公用"
+	s := ProcessDormName("dsfds")
 	fmt.Println(s)
 }
 
