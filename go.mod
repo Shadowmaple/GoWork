@@ -3,6 +3,7 @@ module github.com/Shadowmaple/GoWork
 go 1.12
 
 require (
+	github.com/360EntSecGroup-Skylar/excelize v1.4.1
 	github.com/MuxiKeStack/muxiK-StackBackend v0.0.0-20200625122327-42378c6141c1
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

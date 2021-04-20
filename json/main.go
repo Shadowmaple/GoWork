@@ -42,4 +42,19 @@ func main() {
 		log.Fatalf("JSON marshaling failed: %s", err)
 	}
 	fmt.Println(m)
+
+	// 解析至map，更加灵活
+	payload := make(map[string]interface{}, 0)
+	if err := json.Unmarshal(data, &payload); err != nil {
+		log.Fatalf("JSON marshaling failed: %s", err)
+	}
+	fmt.Println(payload)
+
+	v, ok := payload["title"]
+	fmt.Println(v, ok)
+	if ok {
+		var s string
+		s, ok = v.(string)
+		fmt.Println(s, ok)
+	}
 }
