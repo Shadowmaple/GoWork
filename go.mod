@@ -7,7 +7,7 @@ require (
 	github.com/MuxiKeStack/muxiK-StackBackend v0.0.0-20200625122327-42378c6141c1
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/gin-gonic/gin v1.6.3
+	github.com/gin-gonic/gin v1.7.0
 	github.com/go-redis/redis/v7 v7.4.0
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
 	github.com/jinzhu/gorm v1.9.14
